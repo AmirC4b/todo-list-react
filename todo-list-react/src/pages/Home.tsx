@@ -47,6 +47,26 @@ export default function Home() {
         </div>
       </div>
       {/* todo list */}
+      <div className="bg-white rounded-2xl shadow-lg">
+        {/* empty tasks*/}
+        <div className="p-12 text-center">
+          <div className="text-6xl mb-4">📝</div>
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            No tasks yet
+          </h3>
+          <p className="text-gray-500">
+            Add your first todo above to get started!
+          </p>
+        </div>
+      </div>
+      {/* stats */}
+      <div className="bg-white rounded-2xl shadow-lg my-6 p-6">
+        <div className="flex justify-between items-center text-sm text-gray-600">
+          <span>0 total tasks</span>
+          <span>0 completed</span>
+          <button className="text-red-500 cursor-pointer hover:text-red-700 font-medium duration-200">Clear completed</button>
+        </div>
+      </div>
     </div>
   );
 }
