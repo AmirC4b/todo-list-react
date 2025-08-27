@@ -19,7 +19,7 @@ export default function Signup() {
     localStorage.setItem("userPassword", data.password);
 
     reset();
-    navigate("/");
+    navigate("/login");
     toast.success("Registraition was successful");
   };
 

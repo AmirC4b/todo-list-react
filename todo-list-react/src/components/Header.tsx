@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ClipboardList } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ClipboardList, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Header() {
   const [logged, setLogged] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userFullName = localStorage.getItem("userFullName");
@@ -15,6 +17,20 @@ export default function Header() {
       setLogged(false);
     }
   }, []);
+
+  const capitalizeFirstLetter = (str: any) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  const handleLogOut = () => {
+    localStorage.removeItem("userFullName");
+    localStorage.removeItem("userPassword");
+
+    setLogged(false);
+    navigate("/");
+    toast.success("Logout was succsesful");
+  };
 
   return (
     <div className="bg-white shadow-sm border-b border-gray-100 mb-8">
@@ -29,10 +45,14 @@ export default function Header() {
           </div>
           {/* the ride side of header */}
           {logged ? (
-            <div className="flex gap-3">
-              <button  className="text-gray-600 hover:text-gray-800 cursor-pointer duration-200 font-medium">
-                <Link to={"/"}>Logut</Link>
-              </button>
+            <div className="flex items-center gap-5">
+              <div>Welcome, {capitalizeFirstLetter(localStorage.getItem("userFullName"))}</div>
+              <LogOut
+                onClick={handleLogOut}
+                className="text-gray-600 hover:text-gray-800 cursor-pointer duration-200 font-medium"
+              >
+                Logout
+              </LogOut>
             </div>
           ) : (
             <div className="flex gap-3">

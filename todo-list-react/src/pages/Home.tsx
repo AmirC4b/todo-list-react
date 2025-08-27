@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("All Tasks");
 
   const tabs = ["All Tasks", "Active", "Completed"];
+
+
+
 
   return (
     <div className="max-w-2xl mx-auto px-4">
@@ -64,7 +67,9 @@ export default function Home() {
         <div className="flex justify-between items-center text-sm text-gray-600">
           <span>0 total tasks</span>
           <span>0 completed</span>
-          <button className="text-red-500 cursor-pointer hover:text-red-700 font-medium duration-200">Clear completed</button>
+          <button className="text-red-500 cursor-pointer hover:text-red-700 font-medium duration-200">
+            Clear completed
+          </button>
         </div>
       </div>
     </div>
