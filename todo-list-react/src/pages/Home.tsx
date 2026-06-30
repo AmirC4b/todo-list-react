@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, SquarePen, Trash, Check } from "lucide-react";
+import { Plus, SquarePen, Trash, Check, X } from "lucide-react";
 import { toast } from "react-toastify";
 import { formatDistanceToNow } from "date-fns";
 
@@ -7,6 +7,8 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState("All Tasks");
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const [editingText, setEditingText] = useState("");
 
   const tabs = ["All Tasks", "Active", "Completed"];
 
@@ -21,7 +23,7 @@ export default function Home() {
         return;
       }
       const newTodo = {
-        id: todos.length + 1,
+        id: Date.now(),
         text: todo,
         completed: false,
         createdAt: Date.now(),
@@ -41,17 +43,32 @@ export default function Home() {
   const toggleTodo = (id) => {
     setTodos(
       todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+      ),
     );
+  };
+
+  const handleSave = () => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === editingId ? { ...todo, text: editingText } : todo,
+      ),
+    );
+    setEditingId(null);
+    setEditingText("");
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+    setEditingText("");
   };
   // for filter the todo list
   const filteredTodos =
     activeTab === "Active"
       ? todos.filter((t) => !t.completed)
       : activeTab === "Completed"
-      ? todos.filter((t) => t.completed)
-      : todos; // All Tasks
+        ? todos.filter((t) => t.completed)
+        : todos; // All Tasks
 
   return (
     <div className="max-w-2xl mx-auto px-4">
@@ -115,7 +132,10 @@ export default function Home() {
           // todo list
           <div>
             {filteredTodos.map((t) => (
-              <div className="p-4 flex items-center gap-4 hover:shad ">
+              <div
+                key={t.id}
+                className="p-4 flex items-center gap-4 hover:shad "
+              >
                 <div
                   className="cursor-pointer"
                   onClick={() => toggleTodo(t.id)}
@@ -128,9 +148,16 @@ export default function Home() {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-gray-800 font-medium break-words">
-                    {t.text}
-                  </p>
+                  {editingId === t.id ? (
+                    <input
+                      value={editingText}
+                      onChange={(e) => setEditingText(e.target.value)}
+                    />
+                  ) : (
+                    <p className="text-gray-800 font-medium break-words">
+                      {t.text}
+                    </p>
+                  )}
                   <p className="text-xs text-gray-500 mt-1">
                     {" "}
                     {formatDistanceToNow(new Date(t.createdAt), {
@@ -139,7 +166,26 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <SquarePen className="text-gray-400 hover:text-blue-600 cursor-pointer duration-200 size-4 " />
+                  {editingId === t.id ? (
+                    <div className="flex gap-2">
+                      <Check
+                        onClick={handleSave}
+                        className="text-gray-400 hover:text-green-600 cursor-pointer duration-200 size-4 "
+                      />
+                      <X
+                        onClick={handleCancel}
+                        className="text-gray-400 hover:text-red-600 cursor-pointer duration-200 size-4 "
+                      />
+                    </div>
+                  ) : (
+                    <SquarePen
+                      onClick={() => {
+                        setEditingId(t.id);
+                        setEditingText(t.text);
+                      }}
+                      className="text-gray-400 hover:text-blue-600 cursor-pointer duration-200 size-4 "
+                    />
+                  )}
                   <Trash
                     onClick={() => handleDelete(t.id)}
                     className="text-gray-400 cursor-pointer hover:text-blue-600 duration-200 size-4 "
