@@ -1,27 +1,33 @@
-import React, { useState } from "react";
 import { ClipboardList, LogOut } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+interface LoginData {
+  fullName: string;
+  password: string;
+}
 
 export default function Signup() {
   const navigate = useNavigate();
 
+  interface User {
+    fullName: string;
+    password: string;
+  }
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
-
-  const onSubmit = (data: any) => {
+  } = useForm<LoginData>();
+  const onSubmit = (data: LoginData) => {
     const storedUsers = localStorage.getItem("users");
     const users = storedUsers ? JSON.parse(storedUsers) : [];
 
     console.log("users:", users);
     console.log("data:", data);
     const user = users.find(
-      (user: any) =>
+      (user: User) =>
         user.fullName === data.fullName && user.password === data.password,
     );
     console.log("found user:", user);

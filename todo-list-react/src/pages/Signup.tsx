@@ -1,8 +1,15 @@
-import React, { useState } from "react";
 import { ClipboardList, UserRoundPlus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+interface User {
+  fullName: string;
+  password: string;
+}
+interface SignupData {
+  fullName: string;
+  password: string;
+}
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -12,14 +19,14 @@ export default function Signup() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm<SignupData>();
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: SignupData) => {
     const storedUsers = localStorage.getItem("users");
-    const users = storedUsers ? JSON.parse(storedUsers) : [];
+    const users: User[] = storedUsers ? JSON.parse(storedUsers) : [];
 
     const existingUser = users.find(
-      (user: any) => user.fullName === data.fullName,
+      (user: User) => user.fullName === data.fullName,
     );
 
     if (existingUser) {
@@ -80,23 +87,7 @@ export default function Signup() {
                 <p className="text-red-600 mt-4">Full Name is required.</p>
               )}
             </div>
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700 mb-2"
-                htmlFor="email"
-              >
-                Email Address
-              </label>
-              <input
-                placeholder="Enter your email"
-                id="email"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                {...register("email", { required: true })}
-              />
-              {errors.email && (
-                <p className="text-red-600 mt-4">Email is required.</p>
-              )}
-            </div>
+
             <div>
               <label
                 className="block text-sm font-medium text-gray-700 mb-2"

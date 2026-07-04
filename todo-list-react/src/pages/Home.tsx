@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import { Plus, SquarePen, Trash, Check, X } from "lucide-react";
 import { toast } from "react-toastify";
 import { formatDistanceToNow } from "date-fns";
+interface Todo {
+  id: number;
+  text: string;
+  completed: boolean;
+  createdAt: number;
+}
 
 const getTodoKey = () => {
   const user = localStorage.getItem("currentUser");
@@ -11,8 +17,8 @@ const getTodoKey = () => {
 export default function Home() {
   const todoKey = getTodoKey();
   const [activeTab, setActiveTab] = useState("All Tasks");
-  const [todo, setTodo] = useState("");
-  const [todos, setTodos] = useState(() => {
+  const [todo, setTodo] = useState<string>("");
+  const [todos, setTodos] = useState<Todo[]>(() => {
     const data = localStorage.getItem(todoKey);
     if (data) {
       const storedTodos = JSON.parse(data);
@@ -21,9 +27,8 @@ export default function Home() {
       return [];
     }
   });
-  const [editingId, setEditingId] = useState(null);
-  const [editingText, setEditingText] = useState("");
-
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingText, setEditingText] = useState<string>("");
   const tabs = ["All Tasks", "Active", "Completed"];
 
   const currentUser = localStorage.getItem("currentUser");
@@ -63,11 +68,11 @@ export default function Home() {
     }
   }, [todoKey]);
   // for deletting the todo
-  const handleDelete = (id) => {
+  const handleDelete = (id: number) => {
     setTodos(todos.filter((todo) => todo.id !== id));
   };
   // for check the todo
-  const toggleTodo = (id) => {
+  const toggleTodo = (id: number) => {
     setTodos(
       todos.map((todo) =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo,
