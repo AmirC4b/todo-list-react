@@ -94,6 +94,11 @@ export default function Home() {
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 ">
         <div className="flex gap-3">
           <input
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleAddTodo();
+              }
+            }}
             value={todo}
             onChange={(e) => setTodo(e.target.value)}
             type="text"
