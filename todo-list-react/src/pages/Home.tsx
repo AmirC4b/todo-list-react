@@ -6,7 +6,15 @@ import { formatDistanceToNow } from "date-fns";
 export default function Home() {
   const [activeTab, setActiveTab] = useState("All Tasks");
   const [todo, setTodo] = useState("");
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(() => {
+    const data = localStorage.getItem("todos");
+    if (data) {
+      const storedTodos = JSON.parse(data);
+      return storedTodos;
+    } else {
+      return [];
+    }
+  });
   const [editingId, setEditingId] = useState(null);
   const [editingText, setEditingText] = useState("");
 
@@ -35,6 +43,11 @@ export default function Home() {
       toast.info("first make sure you login or have account");
     }
   };
+  // for saving the todos after todo made
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
+
   // for deletting the todo
   const handleDelete = (id) => {
     setTodos(todos.filter((todo) => todo.id !== id));
@@ -47,7 +60,7 @@ export default function Home() {
       ),
     );
   };
-
+  // for saving editing todo
   const handleSave = () => {
     setTodos(
       todos.map((todo) =>
@@ -57,7 +70,7 @@ export default function Home() {
     setEditingId(null);
     setEditingText("");
   };
-
+  //for cancel editing todo
   const handleCancel = () => {
     setEditingId(null);
     setEditingText("");
@@ -204,7 +217,10 @@ export default function Home() {
           <span>{todos.length} total tasks</span>
           <span>{todos.filter((t) => t.completed).length} completed</span>
           <button
-            onClick={() => setTodos(todos.filter((t) => !t.completed))}
+            onClick={() => {
+              console.log(todos);
+              setTodos(todos.filter((t) => !t.completed));
+            }}
             className="text-red-500 cursor-pointer hover:text-red-700 font-medium duration-200"
           >
             Clear completed
