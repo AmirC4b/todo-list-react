@@ -3,11 +3,17 @@ import { Plus, SquarePen, Trash, Check, X } from "lucide-react";
 import { toast } from "react-toastify";
 import { formatDistanceToNow } from "date-fns";
 
+const getTodoKey = () => {
+  const user = localStorage.getItem("currentUser");
+  return `todos_${user}`;
+};
+
 export default function Home() {
+  const todoKey = getTodoKey();
   const [activeTab, setActiveTab] = useState("All Tasks");
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState(() => {
-    const data = localStorage.getItem("todos");
+    const data = localStorage.getItem(todoKey);
     if (data) {
       const storedTodos = JSON.parse(data);
       return storedTodos;
@@ -20,12 +26,11 @@ export default function Home() {
 
   const tabs = ["All Tasks", "Active", "Completed"];
 
-  const userFullName = localStorage.getItem("userFullName");
-  const userPassword = localStorage.getItem("userPassword");
+  const currentUser = localStorage.getItem("currentUser");
 
   // for add todo to todo list
   const handleAddTodo = () => {
-    if (userFullName && userPassword) {
+    if (currentUser) {
       if (todo.trim() === "") {
         toast.error("Todo cannot be empty!");
         return;
@@ -45,9 +50,18 @@ export default function Home() {
   };
   // for saving the todos after todo made
   useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
+    localStorage.setItem(todoKey, JSON.stringify(todos));
   }, [todos]);
 
+  useEffect(() => {
+    const data = localStorage.getItem(todoKey);
+
+    if (data) {
+      setTodos(JSON.parse(data));
+    } else {
+      setTodos([]);
+    }
+  }, [todoKey]);
   // for deletting the todo
   const handleDelete = (id) => {
     setTodos(todos.filter((todo) => todo.id !== id));
@@ -168,6 +182,11 @@ export default function Home() {
                 <div className="flex-1 min-w-0">
                   {editingId === t.id ? (
                     <input
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleSave();
+                        } else if (e.key === "Escape") handleCancel();
+                      }}
                       className="w-full px-3 py-1 border border-blue-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       autoFocus
                       value={editingText}

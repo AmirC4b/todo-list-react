@@ -15,12 +15,28 @@ export default function Signup() {
   } = useForm();
 
   const onSubmit = (data: any) => {
-    localStorage.setItem("userFullName", data.fullName);
-    localStorage.setItem("userPassword", data.password);
+    const storedUsers = localStorage.getItem("users");
+    const users = storedUsers ? JSON.parse(storedUsers) : [];
 
-    reset();
-    navigate("/login");
-    toast.success("Registraition was successful");
+    const existingUser = users.find(
+      (user: any) => user.fullName === data.fullName,
+    );
+
+    if (existingUser) {
+      toast.error("You already have an account");
+      return;
+    } else {
+      users.push({
+        fullName: data.fullName,
+        password: data.password,
+      });
+
+      localStorage.setItem("users", JSON.stringify(users));
+
+      reset();
+      navigate("/login");
+      toast.success("Registraition was successful");
+    }
   };
 
   return (
@@ -90,7 +106,7 @@ export default function Signup() {
               </label>
               <input
                 placeholder="Create a password (min. 8 characters)"
-                id="pasword"
+                id="password"
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                 {...register("password", { required: true, minLength: 8 })}
               />

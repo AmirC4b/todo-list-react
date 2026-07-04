@@ -8,10 +8,9 @@ export default function Header() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userFullName = localStorage.getItem("userFullName");
-    const userPassword = localStorage.getItem("userPassword");
+    const currentUser = localStorage.getItem("currentUser");
 
-    if (userFullName && userPassword) {
+    if (currentUser) {
       setLogged(true);
     } else {
       setLogged(false);
@@ -24,8 +23,7 @@ export default function Header() {
   };
 
   const handleLogOut = () => {
-    localStorage.removeItem("userFullName");
-    localStorage.removeItem("userPassword");
+    localStorage.removeItem("currentUser");
 
     setLogged(false);
     navigate("/");
@@ -46,7 +44,7 @@ export default function Header() {
           {/* the ride side of header */}
           {logged ? (
             <div className="flex items-center gap-5">
-              <div>Welcome, {capitalizeFirstLetter(localStorage.getItem("userFullName"))}</div>
+              <div>Welcome, {capitalizeFirstLetter(localStorage.getItem("currentUser"))}</div>
               <LogOut
                 onClick={handleLogOut}
                 className="text-gray-600 hover:text-gray-800 cursor-pointer duration-200 font-medium"

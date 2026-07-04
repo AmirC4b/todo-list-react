@@ -14,16 +14,26 @@ export default function Signup() {
     formState: { errors },
   } = useForm();
 
-  const userFullName = localStorage.getItem("userFullName");
-  const userPassword = localStorage.getItem("userPassword");
-
   const onSubmit = (data: any) => {
-    if (data.fullName === userFullName && data.password === userPassword) {
-      navigate("/");
+    const storedUsers = localStorage.getItem("users");
+    const users = storedUsers ? JSON.parse(storedUsers) : [];
+
+    console.log("users:", users);
+    console.log("data:", data);
+    const user = users.find(
+      (user: any) =>
+        user.fullName === data.fullName && user.password === data.password,
+    );
+    console.log("found user:", user);
+    if (user) {
+      localStorage.setItem("currentUser", user.fullName);
+
       toast.success("Login was successful");
+      navigate("/");
     } else {
-      toast.error("account not Found,first Make account");
+      toast.error("Invalid username or password");
     }
+
     reset();
   };
 
@@ -75,7 +85,7 @@ export default function Signup() {
               </label>
               <input
                 placeholder="Enter your password"
-                id="pasword"
+                id="password"
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                 {...register("password", { required: true, minLength: 8 })}
               />
