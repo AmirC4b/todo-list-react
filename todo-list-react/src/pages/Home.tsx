@@ -150,6 +150,8 @@ export default function Home() {
                 <div className="flex-1 min-w-0">
                   {editingId === t.id ? (
                     <input
+                      className="w-full px-3 py-1 border border-blue-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      autoFocus
                       value={editingText}
                       onChange={(e) => setEditingText(e.target.value)}
                     />
@@ -170,7 +172,7 @@ export default function Home() {
                     <div className="flex gap-2">
                       <Check
                         onClick={handleSave}
-                        className="text-gray-400 hover:text-green-600 cursor-pointer duration-200 size-4 "
+                        className="text-gray-400 hover:text-green-600 cursor-pointer mb-4 duration-200 size-4 "
                       />
                       <X
                         onClick={handleCancel}
